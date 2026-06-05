@@ -12,8 +12,8 @@ public struct AnyDestination:  @MainActor Hashable {
     let id = UUID().uuidString
     var destination: AnyView
     
-    public init<T: View>(destination: T) {
-        self.destination = AnyView(destination)
+    public init<T: View>(destination: @autoclosure @escaping () -> T) {
+        self.destination = AnyView(_DeferredView { destination() })
     }
     
     public func hash(into hasher: inout Hasher) {
@@ -23,4 +23,9 @@ public struct AnyDestination:  @MainActor Hashable {
     public static func == (lhs: AnyDestination, rhs: AnyDestination) -> Bool {
         lhs.hashValue == rhs.hashValue
     }
+}
+
+private struct _DeferredView<Content: View>: View {
+    let build: () -> Content
+    var body: some View { build() }
 }
