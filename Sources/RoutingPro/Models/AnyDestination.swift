@@ -14,6 +14,7 @@ public struct AnyDestination:  @MainActor Hashable {
     
     public init<T: View>(destination: @autoclosure @escaping () -> T) {
         self.destination = AnyView(_DeferredView { destination() })
+        //
     }
     
     public func hash(into hasher: inout Hasher) {
